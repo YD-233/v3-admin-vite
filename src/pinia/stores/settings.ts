@@ -19,7 +19,6 @@ export const useSettingsStore = defineStore("settings", () => {
   for (const [key, value] of Object.entries(layoutsConfig)) {
     // 使用类型断言来指定 key 的类型，将 value 包装在 ref 函数中，创建一个响应式变量
     const refValue = ref(value)
-    // @ts-expect-error ignore
     state[key as SettingsStoreKey] = refValue
     // 监听每个响应式变量
     watch(refValue, () => {
@@ -33,7 +32,6 @@ export const useSettingsStore = defineStore("settings", () => {
   const getCacheData = () => {
     const settings = {} as LayoutsConfig
     for (const [key, value] of Object.entries(state)) {
-      // @ts-expect-error ignore
       settings[key as SettingsStoreKey] = value.value
     }
     return settings
