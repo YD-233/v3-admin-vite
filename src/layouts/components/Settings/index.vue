@@ -1,11 +1,7 @@
 <script lang="ts" setup>
-import { useLayoutMode } from "@@/composables/useLayoutMode"
 import { removeLayoutsConfig } from "@@/utils/cache/local-storage"
 import { Refresh } from "@element-plus/icons-vue"
 import { useSettingsStore } from "@/pinia/stores/settings"
-import SelectLayoutMode from "./SelectLayoutMode.vue"
-
-const { isLeft } = useLayoutMode()
 
 const settingsStore = useSettingsStore()
 
@@ -31,11 +27,6 @@ const switchSettings = {
   "是否缓存标签栏": cacheTagsView
 }
 
-// 非左侧模式时，Header 都是 fixed 布局
-watchEffect(() => {
-  !isLeft.value && (fixedHeader.value = true)
-})
-
 /** 重置项目配置 */
 function resetLayoutsConfig() {
   removeLayoutsConfig()
@@ -45,13 +36,10 @@ function resetLayoutsConfig() {
 
 <template>
   <div class="setting-container">
-    <h4>布局配置</h4>
-    <SelectLayoutMode />
-    <el-divider />
     <h4>功能配置</h4>
     <div v-for="(settingValue, settingName, index) in switchSettings" :key="index" class="setting-item">
       <span class="setting-name">{{ settingName }}</span>
-      <el-switch v-model="settingValue.value" :disabled="!isLeft && settingName === '固定 Header'" />
+      <el-switch v-model="settingValue.value" />
     </div>
     <el-button type="danger" :icon="Refresh" @click="resetLayoutsConfig">
       重 置

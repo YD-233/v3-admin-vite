@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useDevice } from "@@/composables/useDevice"
-import { useLayoutMode } from "@@/composables/useLayoutMode"
 import { getCssVar } from "@@/utils/css"
 import { useAppStore } from "@/pinia/stores/app"
 import { usePermissionStore } from "@/pinia/stores/permission"
@@ -13,10 +11,6 @@ const v3SidebarMenuBgColor = getCssVar("--v3-sidebar-menu-bg-color")
 const v3SidebarMenuTextColor = getCssVar("--v3-sidebar-menu-text-color")
 
 const v3SidebarMenuActiveTextColor = getCssVar("--v3-sidebar-menu-active-text-color")
-
-const { isMobile } = useDevice()
-
-const { isLeft, isTop } = useLayoutMode()
 
 const route = useRoute()
 
@@ -32,19 +26,19 @@ const noHiddenRoutes = computed(() => permissionStore.routes.filter(item => !ite
 
 const isCollapse = computed(() => !appStore.sidebar.opened)
 
-const isLogo = computed(() => isLeft.value && settingsStore.showLogo)
+const isLogo = computed(() => settingsStore.showLogo)
 
-const backgroundColor = computed(() => (isLeft.value ? v3SidebarMenuBgColor : undefined))
+const backgroundColor = computed(() => v3SidebarMenuBgColor)
 
-const textColor = computed(() => (isLeft.value ? v3SidebarMenuTextColor : undefined))
+const textColor = computed(() => v3SidebarMenuTextColor)
 
-const activeTextColor = computed(() => (isLeft.value ? v3SidebarMenuActiveTextColor : undefined))
+const activeTextColor = computed(() => v3SidebarMenuActiveTextColor)
 
-const sidebarMenuItemHeight = computed(() => !isTop.value ? "var(--v3-sidebar-menu-item-height)" : "var(--v3-navigationbar-height)")
+const sidebarMenuItemHeight = computed(() => "var(--v3-sidebar-menu-item-height)")
 
-const sidebarMenuHoverBgColor = computed(() => !isTop.value ? "var(--v3-sidebar-menu-hover-bg-color)" : "transparent")
+const sidebarMenuHoverBgColor = computed(() => "var(--v3-sidebar-menu-hover-bg-color)")
 
-const tipLineWidth = computed(() => !isTop.value ? "2px" : "0px")
+const tipLineWidth = computed(() => "2px")
 </script>
 
 <template>
@@ -53,12 +47,12 @@ const tipLineWidth = computed(() => !isTop.value ? "2px" : "0px")
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
         :default-active="activeMenu"
-        :collapse="isCollapse && !isTop"
+        :collapse="isCollapse"
         :background-color="backgroundColor"
         :text-color="textColor"
         :active-text-color="activeTextColor"
         :collapse-transition="false"
-        :mode="isTop && !isMobile ? 'horizontal' : 'vertical'"
+        mode="vertical"
       >
         <Item
           v-for="noHiddenRoute in noHiddenRoutes"

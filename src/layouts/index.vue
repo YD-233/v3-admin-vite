@@ -1,20 +1,12 @@
 <script lang="ts" setup>
-import { useDevice } from "@@/composables/useDevice"
-import { useLayoutMode } from "@@/composables/useLayoutMode"
 import { getCssVar, setCssVar } from "@@/utils/css"
 import { useSettingsStore } from "@/pinia/stores/settings"
 import { RightPanel, Settings } from "./components"
 import { useResize } from "./composables/useResize"
 import LeftMode from "./modes/LeftMode.vue"
-import LeftTopMode from "./modes/LeftTopMode.vue"
-import TopMode from "./modes/TopMode.vue"
 
 // Layout 布局响应式
 useResize()
-
-const { isMobile } = useDevice()
-
-const { isLeft, isTop, isLeftTop } = useLayoutMode()
 
 const settingsStore = useSettingsStore()
 
@@ -33,12 +25,8 @@ watchEffect(() => {
 
 <template>
   <div>
-    <!-- 左侧模式 -->
-    <LeftMode v-if="isLeft || isMobile" />
-    <!-- 顶部模式 -->
-    <TopMode v-else-if="isTop" />
-    <!-- 混合模式 -->
-    <LeftTopMode v-else-if="isLeftTop" />
+    <!-- 固定使用左侧布局模式 -->
+    <LeftMode />
     <!-- 右侧设置面板 -->
     <RightPanel v-if="showSettings">
       <Settings />
