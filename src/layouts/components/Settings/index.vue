@@ -17,12 +17,7 @@ const {
   showFooter,
   showNotify,
   showThemeSwitch,
-  showScreenfull,
-  showSearchMenu,
-  cacheTagsView,
-  showWatermark,
-  showGreyMode,
-  showColorWeakness
+  cacheTagsView
 } = storeToRefs(settingsStore)
 
 /** 定义 switch 设置项 */
@@ -33,12 +28,7 @@ const switchSettings = {
   "显示页脚": showFooter,
   "显示消息通知": showNotify,
   "显示切换主题按钮": showThemeSwitch,
-  "显示全屏按钮": showScreenfull,
-  "显示搜索按钮": showSearchMenu,
-  "是否缓存标签栏": cacheTagsView,
-  "开启系统水印": showWatermark,
-  "显示灰色模式": showGreyMode,
-  "显示色弱模式": showColorWeakness
+  "是否缓存标签栏": cacheTagsView
 }
 
 // 非左侧模式时，Header 都是 fixed 布局

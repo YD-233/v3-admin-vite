@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import type { RouterLink } from "vue-router"
-import Screenfull from "@@/components/Screenfull/index.vue"
 import { useRouteListener } from "@@/composables/useRouteListener"
 import { ArrowLeft, ArrowRight } from "@element-plus/icons-vue"
-import { useSettingsStore } from "@/pinia/stores/settings"
 
 interface Props {
   tagRefs: InstanceType<typeof RouterLink>[] | null
@@ -12,8 +10,6 @@ interface Props {
 const props = defineProps<Props>()
 
 const route = useRoute()
-
-const settingsStore = useSettingsStore()
 
 const { listenerRouteChange } = useRouteListener()
 
@@ -120,7 +116,6 @@ listenerRouteChange(() => {
         <ArrowRight />
       </el-icon>
     </el-tooltip>
-    <Screenfull v-if="settingsStore.showScreenfull" :content="true" class="screenfull" />
   </div>
 </template>
 
@@ -149,13 +144,6 @@ listenerRouteChange(() => {
     .scrollbar-content {
       display: inline-block;
     }
-  }
-  .screenfull {
-    width: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
   }
 }
 </style>

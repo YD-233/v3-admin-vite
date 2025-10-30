@@ -44,9 +44,6 @@ importers:
       pinia:
         specifier: 3.0.3
         version: 3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
-      screenfull:
-        specifier: 6.0.2
-        version: 6.0.2
       vue:
         specifier: 3.5.22
         version: 3.5.22(typescript@5.9.3)
@@ -3110,10 +3107,6 @@ packages:
     resolution: {integrity: sha512-t+YPtOQHpGW1QWsh1CHQ5cPIr9lbbGZLZnbihP/D/qZj/yuV68m8qarcV17nvkOX81BCrvzAlq2klCQFZghyTg==}
     engines: {node: '>=14.0.0'}
     hasBin: true
-
-  screenfull@6.0.2:
-    resolution: {integrity: sha512-AQdy8s4WhNvUZ6P8F6PB21tSPIYKniic+Ogx0AacBMjKP1GUHN2E9URxQHtCusiwxudnCKkdy4GrHXPPJSkCCw==}
-    engines: {node: ^14.13.1 || >=16.0.0}
 
   scslre@0.3.0:
     resolution: {integrity: sha512-3A6sD0WYP7+QrjbfNA2FN3FsOaGGFoekCVgTyypy53gPxhbkCIjtO6YWgdrfM+n/8sI8JeXZOIxsHjMTNxQ4nQ==}
@@ -6905,8 +6898,6 @@ snapshots:
     optionalDependencies:
       '@parcel/watcher': 2.5.1
     optional: true
-
-  screenfull@6.0.2: {}
 
   scslre@0.3.0:
     dependencies:

@@ -116,7 +116,7 @@
 - 页面 (Page) 命名: 始终采用短横线连接 (kebab-case) 的命名方式
 - 页面 (Page) 命名示例: 以增删改查示例页面作为参考 `@/pages/demo/element-plus/index.vue`
 - 组合式函数 (Composable) 命名: 始终采用小驼峰 (camelCase) 的命名方式
-- 组合式函数 (Composable) 命名示例: 以水印组合式函数作为参考 `@@/composables/useWatermark.ts`
+- 组合式函数 (Composable) 命名示例: 以主题组合式函数作为参考 `@@/composables/useTheme.ts`
 - Props 命名: 在声明 prop 的时候，其命名应该始终采用小驼峰 (camelCase)，而在模板和 JSX 中应该始终采用短横线连接 (kebab-case)
 - Props 命名示例: 声明时 `const { isActive = false } = defineProps<Props>()` 和传递时 `<Demo :is-active="true" />`
 - TS 或 JS 文件命名: 始终采用短横线连接 (kebab-case) 的命名方式
