@@ -9,10 +9,7 @@ import { loginApi } from "./apis"
 import Owl from "./components/Owl.vue"
 import { useFocus } from "./composables/useFocus"
 
-const route = useRoute()
-
 const router = useRouter()
-
 const userStore = useUserStore()
 
 const settingsStore = useSettingsStore()
@@ -27,8 +24,8 @@ const loading = ref(false)
 
 /** 登录表单数据 */
 const loginFormData: LoginRequestData = reactive({
-  username: "admin",
-  password: "12345678"
+  username: "",
+  password: ""
 })
 
 /** 登录表单校验规则 */
@@ -37,28 +34,26 @@ const loginFormRules: FormRules = {
     { required: true, message: "请输入用户名", trigger: "blur" }
   ],
   password: [
-    { required: true, message: "请输入密码", trigger: "blur" },
-    { min: 8, max: 16, message: "长度在 8 到 16 个字符", trigger: "blur" }
+    { required: true, message: "请输入密码", trigger: "blur" }
   ]
 }
 
 /** 登录 */
-function handleLogin() {
-  loginFormRef.value?.validate((valid) => {
-    if (!valid) {
-      ElMessage.error("表单校验不通过")
-      return
-    }
+async function handleLogin() {
+  if (loginFormRef.value?.validate) {
     loading.value = true
-    loginApi(loginFormData).then(({ data }) => {
-      userStore.setToken(data.token)
-      router.push(route.query.redirect ? decodeURIComponent(route.query.redirect as string) : "/")
-    }).catch(() => {
-      loginFormData.password = ""
-    }).finally(() => {
+    try {
+      const { data } = await loginApi(loginFormData)
+      userStore.setToken(data.tokenValue)
+      router.push({ path: "/" })
+    } catch {
+      ElMessage.error("登录失败，请检查用户名和密码")
+    } finally {
       loading.value = false
-    })
-  })
+    }
+  } else {
+    return false
+  }
 }
 </script>
 

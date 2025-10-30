@@ -1,6 +1,6 @@
 /** 模拟接口响应数据 */
 const SELECT_RESPONSE_DATA = {
-  code: 0,
+  code: 200,
   data: [
     {
       label: "苹果",
@@ -16,7 +16,7 @@ const SELECT_RESPONSE_DATA = {
       disabled: true
     }
   ],
-  message: "获取 Select 数据成功"
+  msg: "获取 Select 数据成功"
 }
 
 const ERROR_MESSAGE = "接口发生错误"
