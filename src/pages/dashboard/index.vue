@@ -5,7 +5,8 @@ import Editor from "./components/Editor.vue"
 
 const userStore = useUserStore()
 
-const isAdmin = userStore.roles.includes("admin")
+// 单用户模式下，登录即为admin
+const isAdmin = userStore.isLoggedIn
 </script>
 
 <template>

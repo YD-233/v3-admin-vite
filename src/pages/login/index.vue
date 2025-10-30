@@ -28,7 +28,7 @@ const loading = ref(false)
 /** 登录表单数据 */
 const loginFormData: LoginRequestData = reactive({
   username: "admin",
-  password: "12345678"
+  password: "admin"
 })
 
 /** 登录表单校验规则 */
@@ -37,8 +37,7 @@ const loginFormRules: FormRules = {
     { required: true, message: "请输入用户名", trigger: "blur" }
   ],
   password: [
-    { required: true, message: "请输入密码", trigger: "blur" },
-    { min: 8, max: 16, message: "长度在 8 到 16 个字符", trigger: "blur" }
+    { required: true, message: "请输入密码", trigger: "blur" }
   ]
 }
 
@@ -50,9 +49,14 @@ function handleLogin() {
       return
     }
     loading.value = true
-    loginApi(loginFormData).then(({ data }) => {
-      userStore.setToken(data.token)
-      router.push(route.query.redirect ? decodeURIComponent(route.query.redirect as string) : "/")
+    loginApi(loginFormData).then((response) => {
+      if (response.code === 200) {
+        userStore.setToken(response.data.tokenValue)
+        ElMessage.success("登录成功")
+        router.push(route.query.redirect ? decodeURIComponent(route.query.redirect as string) : "/")
+      } else {
+        ElMessage.error(response.msg || "登录失败")
+      }
     }).catch(() => {
       loginFormData.password = ""
     }).finally(() => {

@@ -4,7 +4,6 @@ import type { TagView } from "@/pinia/stores/tags-view"
 import { useRouteListener } from "@@/composables/useRouteListener"
 import { Close } from "@element-plus/icons-vue"
 import path from "path-browserify"
-import { usePermissionStore } from "@/pinia/stores/permission"
 import { useTagsViewStore } from "@/pinia/stores/tags-view"
 import ScrollPane from "./ScrollPane.vue"
 
@@ -14,7 +13,7 @@ const route = useRoute()
 
 const tagsViewStore = useTagsViewStore()
 
-const permissionStore = usePermissionStore()
+// 单用户模式下直接使用router的routes
 
 const { listenerRouteChange } = useRouteListener()
 
@@ -69,7 +68,8 @@ function filterAffixTags(routes: RouteRecordRaw[], basePath = "/") {
 
 /** 初始化标签页 */
 function initTags() {
-  affixTags = filterAffixTags(permissionStore.routes)
+  // 单用户模式下直接使用router的routes
+  affixTags = filterAffixTags(router.getRoutes())
   for (const tag of affixTags) {
     // 必须含有 name 属性
     tag.name && tagsViewStore.addVisitedView(tag)
