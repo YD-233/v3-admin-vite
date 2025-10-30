@@ -15,10 +15,6 @@ export function getLayoutsConfig() {
 export function setLayoutsConfig(settings: LayoutsConfig) {
   localStorage.setItem(CacheKey.CONFIG_LAYOUT, JSON.stringify(settings))
 }
-
-export function removeLayoutsConfig() {
-  localStorage.removeItem(CacheKey.CONFIG_LAYOUT)
-}
 // #endregion
 
 // #region 侧边栏状态
