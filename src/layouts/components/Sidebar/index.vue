@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { getCssVar } from "@@/utils/css"
 import { useAppStore } from "@/pinia/stores/app"
-import { usePermissionStore } from "@/pinia/stores/permission"
 import { useSettingsStore } from "@/pinia/stores/settings"
+import { constantRoutes } from "@/router"
 import { Logo } from "../index"
 import Item from "./Item.vue"
 
@@ -16,13 +16,14 @@ const route = useRoute()
 
 const appStore = useAppStore()
 
-const permissionStore = usePermissionStore()
-
 const settingsStore = useSettingsStore()
 
 const activeMenu = computed(() => route.meta.activeMenu || route.path)
 
-const noHiddenRoutes = computed(() => permissionStore.routes.filter(item => !item.meta?.hidden))
+// 单用户模式下直接使用constantRoutes，过滤掉隐藏的路由
+const noHiddenRoutes = computed(() => {
+  return constantRoutes.filter(item => !item.meta?.hidden)
+})
 
 const isCollapse = computed(() => !appStore.sidebar.opened)
 

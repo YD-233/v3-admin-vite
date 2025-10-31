@@ -37,15 +37,16 @@ function createInstance() {
         return Promise.reject(new Error("非本系统的接口"))
       }
       switch (code) {
+        case 0:
         case 200:
-          // 本系统采用 code === 200 来表示没有业务错误
+          // 本系统采用 code === 0 或 code === 200 来表示没有业务错误
           return apiData
         case 401:
           // Token 过期时
           return logout()
         default:
           // 不是正确的 code
-          ElMessage.error(apiData.msg || "Error")
+          ElMessage.error(apiData.message || apiData.msg || "Error")
           return Promise.reject(new Error("Error"))
       }
     },

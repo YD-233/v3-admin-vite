@@ -5,9 +5,20 @@ export interface LoginRequestData {
   password: string
 }
 
-export interface LoginTokenData {
-  /** token值 */
-  tokenValue: string
+export interface LoginResponseData {
+  code: number
+  msg: string
+  data: {
+    tokenName: string
+    tokenValue: string
+    isLogin: boolean
+    loginId: string
+    loginType: string
+    tokenTimeout: number
+    sessionTimeout: number
+    tokenSessionTimeout: number
+    tokenActiveTimeout: number
+    loginDeviceType: string
+    tag: string | null
+  }
 }
-
-export type LoginResponseData = ApiResponseData<LoginTokenData>

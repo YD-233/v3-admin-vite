@@ -25,10 +25,6 @@ declare module "vue-router" {
      */
     hidden?: boolean
     /**
-     * @description 设置能进入该路由的角色，支持多个角色叠加
-     */
-    roles?: string[]
-    /**
      * @description 默认 true，如果设置为 false，则不会在面包屑中显示
      */
     breadcrumb?: boolean

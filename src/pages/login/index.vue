@@ -10,6 +10,7 @@ import Owl from "./components/Owl.vue"
 import { useFocus } from "./composables/useFocus"
 
 const router = useRouter()
+const route = useRoute()
 const userStore = useUserStore()
 
 const settingsStore = useSettingsStore()
@@ -24,8 +25,8 @@ const loading = ref(false)
 
 /** 登录表单数据 */
 const loginFormData: LoginRequestData = reactive({
-  username: "",
-  password: ""
+  username: "admin",
+  password: "admin"
 })
 
 /** 登录表单校验规则 */
@@ -42,15 +43,19 @@ const loginFormRules: FormRules = {
 async function handleLogin() {
   if (loginFormRef.value?.validate) {
     loading.value = true
-    try {
-      const { data } = await loginApi(loginFormData)
-      userStore.setToken(data.tokenValue)
-      router.push({ path: "/" })
-    } catch {
-      ElMessage.error("登录失败，请检查用户名和密码")
-    } finally {
+    loginApi(loginFormData).then((response) => {
+      if (response.code === 200) {
+        userStore.setToken(response.data.tokenValue)
+        ElMessage.success("登录成功")
+        router.push(route.query.redirect ? decodeURIComponent(route.query.redirect as string) : "/")
+      } else {
+        ElMessage.error(response.msg || "登录失败")
+      }
+    }).catch(() => {
+      loginFormData.password = ""
+    }).finally(() => {
       loading.value = false
-    }
+    })
   } else {
     return false
   }
