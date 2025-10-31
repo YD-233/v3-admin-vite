@@ -66,7 +66,7 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/demo",
     component: Layouts,
-    redirect: "/demo/unocss",
+    redirect: "/demo/element-plus",
     name: "Demo",
     meta: {
       title: "示例集合",
@@ -74,28 +74,11 @@ export const constantRoutes: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: "unocss",
-        component: () => import("@/pages/demo/unocss/index.vue"),
-        name: "UnoCSS",
-        meta: {
-          title: "UnoCSS"
-        }
-      },
-      {
         path: "element-plus",
         component: () => import("@/pages/demo/element-plus/index.vue"),
         name: "ElementPlus",
         meta: {
           title: "Element Plus",
-          keepAlive: true
-        }
-      },
-      {
-        path: "vxe-table",
-        component: () => import("@/pages/demo/vxe-table/index.vue"),
-        name: "VxeTable",
-        meta: {
-          title: "Vxe Table",
           keepAlive: true
         }
       },
