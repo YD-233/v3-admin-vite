@@ -64,6 +64,27 @@ export const constantRoutes: RouteRecordRaw[] = [
     ]
   },
   {
+    path: "/listener",
+    component: Layouts,
+    redirect: "/listener/list",
+    name: "Listener",
+    meta: {
+      title: "监听器",
+      elIcon: "Connection"
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/pages/listener/index.vue"),
+        name: "ListenerList",
+        meta: {
+          title: "监听器列表",
+          keepAlive: true
+        }
+      }
+    ]
+  },
+  {
     path: "/demo",
     component: Layouts,
     redirect: "/demo/element-plus",
