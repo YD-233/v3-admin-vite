@@ -46,14 +46,14 @@ function createInstance() {
           return logout()
         default:
           // 不是正确的 code
-          ElMessage.error(apiData.message || apiData.msg || "Error")
+          ElMessage.error(apiData.message || "Error")
           return Promise.reject(new Error("Error"))
       }
     },
     (error) => {
       // status 是 HTTP 状态码
       const status = get(error, "response.status")
-      const message = get(error, "response.data.msg")
+      const message = get(error, "response.data.message")
       switch (status) {
         case 400:
           error.message = "请求错误"

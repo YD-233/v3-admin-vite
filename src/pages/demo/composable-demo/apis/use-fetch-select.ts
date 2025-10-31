@@ -1,22 +1,22 @@
 /** 模拟接口响应数据 */
 const SELECT_RESPONSE_DATA = {
-  code: 200,
+  code: 0,
   data: [
     {
       label: "苹果",
-      value: 1
+      value: "apple"
     },
     {
       label: "香蕉",
-      value: 2
+      value: "banana"
     },
     {
-      label: "橘子",
-      value: 3,
+      label: "橙子",
+      value: "orange",
       disabled: true
     }
   ],
-  msg: "获取 Select 数据成功"
+  message: "获取 Select 数据成功"
 }
 
 const ERROR_MESSAGE = "接口发生错误"
