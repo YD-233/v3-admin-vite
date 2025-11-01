@@ -7,7 +7,7 @@ import { ElMessage, ElMessageBox } from "element-plus"
 import { cloneDeep } from "lodash-es"
 
 import { reactive, ref, watch } from "vue"
-import { changeHttpsListenerStatus, createHttpsListener, deleteHttpsListener, getHttpsListeners } from "./apis"
+import { changeHttpsListenerStatus, createHttpsListener, deleteHttpsListener, getHttpsListeners, updateHttpsListener } from "./apis"
 
 defineOptions({
   name: "Listener"
@@ -16,6 +16,7 @@ defineOptions({
 const loading = ref<boolean>(false)
 const batchLoading = ref<boolean>(false)
 const isEditMode = ref<boolean>(false)
+const currentEditUuid = ref<string>("")
 const { paginationData, handleCurrentChange, handleSizeChange } = usePagination()
 
 // 表格数据
@@ -34,7 +35,7 @@ const DEFAULT_FORM_DATA: CreateListenerRequest = {
   externalAddress: "",
   heartBeatTime: 60,
   timeout: 300,
-  isEnable: true
+  enable: true
 }
 
 const formData = ref<CreateListenerRequest>(cloneDeep(DEFAULT_FORM_DATA))
@@ -42,12 +43,10 @@ const formData = ref<CreateListenerRequest>(cloneDeep(DEFAULT_FORM_DATA))
 // 表单校验规则
 const formRules: FormRules<CreateListenerRequest> = reactive({
   name: [
-    { required: true, message: "请输入监听器名称", trigger: "blur" },
-    { min: 1, max: 50, message: "名称长度应在1-50个字符之间", trigger: "blur" }
+    { max: 50, message: "名称长度不能超过50个字符", trigger: "blur" }
   ],
   description: [
-    { required: true, message: "请输入监听器描述", trigger: "blur" },
-    { min: 1, max: 200, message: "描述长度应在1-200个字符之间", trigger: "blur" }
+    { max: 200, message: "描述长度不能超过200个字符", trigger: "blur" }
   ],
   listenAddress: [
     { required: true, message: "请输入监听地址", trigger: "blur" },
@@ -60,8 +59,8 @@ const formRules: FormRules<CreateListenerRequest> = reactive({
   externalAddress: [
     { required: true, message: "请输入外网连接地址", trigger: "blur" },
     {
-      pattern: /^https?:\/\/.+/,
-      message: "请输入正确的URL格式",
+      pattern: /^(\d{1,3}\.){3}\d{1,3}:\d{1,5}$/,
+      message: "请输入正确的IP:端口格式",
       trigger: "blur"
     }
   ],
@@ -94,30 +93,53 @@ function handleCreateOrUpdate() {
       return
     }
 
-    if (isEditMode.value) {
-      ElMessage.warning("暂不支持更新操作")
-      return
-    }
-
     loading.value = true
-    const api = createHttpsListener
-    api(formData.value)
-      .then((response) => {
-        if (response) {
-          ElMessage.success("新增成功")
-          dialogVisible.value = false
-          getTableData()
-        } else {
-          ElMessage.error("操作失败")
-        }
-      })
-      .catch((error) => {
-        console.error("API调用失败:", error)
-        ElMessage.error(error?.message || "操作失败")
-      })
-      .finally(() => {
+
+    if (isEditMode.value) {
+      // 更新操作
+      if (!currentEditUuid.value) {
+        ElMessage.error("监听器ID不存在")
         loading.value = false
-      })
+        return
+      }
+
+      updateHttpsListener(currentEditUuid.value, formData.value)
+        .then((response) => {
+          if (response) {
+            ElMessage.success("更新成功")
+            dialogVisible.value = false
+            getTableData()
+          } else {
+            ElMessage.error("更新失败")
+          }
+        })
+        .catch((error) => {
+          console.error("更新失败:", error)
+          ElMessage.error(error?.message || "更新失败")
+        })
+        .finally(() => {
+          loading.value = false
+        })
+    } else {
+      // 新增操作
+      createHttpsListener(formData.value)
+        .then((response) => {
+          if (response) {
+            ElMessage.success("新增成功")
+            dialogVisible.value = false
+            getTableData()
+          } else {
+            ElMessage.error("新增失败")
+          }
+        })
+        .catch((error) => {
+          console.error("新增失败:", error)
+          ElMessage.error(error?.message || "新增失败")
+        })
+        .finally(() => {
+          loading.value = false
+        })
+    }
   })
 }
 
@@ -188,9 +210,29 @@ function handleBatchDelete() {
 }
 
 // 修改
-function handleUpdate(_row: ListenerData) {
+function handleUpdate(row: ListenerData) {
+  if (!row.uuid) {
+    ElMessage.error("监听器ID不存在")
+    return
+  }
+
+  // 设置编辑模式
   isEditMode.value = true
-  ElMessage.warning("暂不支持更新操作")
+  currentEditUuid.value = row.uuid
+
+  // 填充表单数据
+  formData.value = {
+    name: row.name,
+    description: row.description || "",
+    listenAddress: row.listenAddress,
+    externalAddress: row.externalAddress,
+    heartBeatTime: row.heartBeatTime,
+    timeout: row.timeout,
+    enable: row.enable
+  }
+
+  // 打开对话框
+  dialogVisible.value = true
 }
 
 // 获取表格数据
@@ -225,21 +267,21 @@ function toggleListener(row: ListenerData) {
     return
   }
 
-  const originalStatus = !row.isEnable
+  const originalStatus = !row.enable
 
   changeHttpsListenerStatus(row.uuid)
     .then((response) => {
       if (response) {
-        ElMessage.success(`${row.isEnable ? "启用" : "禁用"}成功`)
+        ElMessage.success(`${row.enable ? "启用" : "禁用"}成功`)
         getTableData()
       } else {
-        row.isEnable = originalStatus
+        row.enable = originalStatus
         ElMessage.error("状态切换失败")
       }
     })
     .catch((error) => {
       console.error("状态切换失败:", error)
-      row.isEnable = originalStatus
+      row.enable = originalStatus
       ElMessage.error(error?.message || "状态切换失败")
     })
 }
@@ -249,6 +291,7 @@ function resetForm() {
   formData.value = cloneDeep(DEFAULT_FORM_DATA)
   formRef.value?.clearValidate()
   isEditMode.value = false
+  currentEditUuid.value = ""
 }
 
 // 监听分页变化
@@ -291,10 +334,10 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           <el-table-column prop="externalAddress" label="外网连接地址" min-width="180" show-overflow-tooltip />
           <el-table-column prop="heartBeatTime" label="心跳时间(秒)" width="120" />
           <el-table-column prop="timeout" label="超时阈值(秒)" width="120" />
-          <el-table-column prop="isEnable" label="状态" align="center" width="80">
+          <el-table-column prop="enable" label="状态" align="center" width="80">
             <template #default="scope">
               <el-switch
-                v-model="scope.row.isEnable"
+                v-model="scope.row.enable"
                 @change="toggleListener(scope.row)"
               />
             </template>
@@ -335,7 +378,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
         <el-form-item prop="name" label="名称">
           <el-input
             v-model="formData.name"
-            placeholder="请输入监听器名称"
+            placeholder="监听器名称（可选，为空时后端自动生成）"
             maxlength="50"
             show-word-limit
           />
@@ -344,7 +387,7 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
           <el-input
             v-model="formData.description"
             type="textarea"
-            placeholder="请输入监听器描述"
+            placeholder="监听器描述（可选）"
             maxlength="200"
             show-word-limit
             :rows="3"
@@ -384,9 +427,9 @@ watch([() => paginationData.currentPage, () => paginationData.pageSize], getTabl
             style="width: 100%"
           />
         </el-form-item>
-        <el-form-item prop="isEnable" label="是否启用">
+        <el-form-item prop="enable" label="是否启用">
           <el-switch
-            v-model="formData.isEnable"
+            v-model="formData.enable"
             active-text="启用"
             inactive-text="禁用"
           />
